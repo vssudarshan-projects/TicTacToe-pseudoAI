@@ -9,7 +9,6 @@ public class PseudoAI {
 
 
     static void systemAction(char[] seq, int pos) {
-        System.out.println("\n\nSystem Turn\n\n");
 
         if (pos != 0) { //not first move
 
@@ -20,7 +19,11 @@ public class PseudoAI {
             boardState[i][j] = 'X';    //place user choice on board
             evaluateBoard(i, j);       //evaluate the new board configuration
         }
-        selectPosition(seq);           //select pseudo AI move
+
+        if (!GameDriver.gameEnd) {
+            System.out.println("\nSystem Turn\n");
+            selectPosition(seq);           //select pseudo AI move
+        }
     }
 
 
@@ -35,42 +38,62 @@ public class PseudoAI {
             for (int k = 0; k < 3; k++)
                 xoCounter(k, k);
 
-            if (index.size() != 0)
-                updateWeights();
+            checkGameEnd();
 
-            flushData(); //reset counts and arraylist
+            if (!GameDriver.gameEnd) {
+                if (index.size() != 0)
+                    updateWeights();
+
+                flushData(); //reset counts and arraylist
+            } else
+                return;
 
             //minor diagonal
-        } else if (n == j + i) {
+        }
+
+        if (n == j + i) {
 
             for (int k = 0; k < 3; k++)
                 xoCounter(k, n - k);
 
-            if (index.size() != 0)
-                updateWeights();
+            checkGameEnd();
 
-            flushData();
+            if (!GameDriver.gameEnd) {
+                if (index.size() != 0)
+                    updateWeights();
+
+                flushData(); //reset counts and arraylist
+            } else
+                return;
+
         }
 
         //row
         for (int k = 0; k < 3; k++)
             xoCounter(i, k);
 
-        if (index.size() != 0)
-            updateWeights();
+        checkGameEnd();
 
-        flushData();
+        if (!GameDriver.gameEnd) {
+            if (index.size() != 0)
+                updateWeights();
+
+            flushData(); //reset counts and arraylist
+        } else
+            return;
 
         //column
         for (int k = 0; k < 3; k++)
             xoCounter(k, j);
 
-        if (index.size() != 0)
-            updateWeights();
+        checkGameEnd();
 
-        flushData();
+        if (!GameDriver.gameEnd) {
+            if (index.size() != 0)
+                updateWeights();
 
-
+            flushData(); //reset counts and arraylist
+        }
     }
 
     //count the Os and Xs, add to arraylist if position is free
@@ -97,9 +120,8 @@ public class PseudoAI {
             weights[index.get(0)[0]][index.get(0)[1]] *= 5;
     }
 
-    //Check if game end state has been reached. Clear counts and arraylist
-    private static void flushData() {
-
+    //Check if game end state has been reached.
+    private static void checkGameEnd() {
         if (oCount == 3) {
             GameDriver.gameEnd = true;
             GameDriver.result = 0;
@@ -107,11 +129,19 @@ public class PseudoAI {
             GameDriver.gameEnd = true;
             GameDriver.result = 1;
         }
+    }
 
+    private static void update() {
+
+    }
+
+    //Clear counts and arraylist
+    private static void flushData() {
         xCount = 0;
         oCount = 0;
         index.clear();
     }
+
 
     //Select placement of symbol by pseudo AI
     private static void selectPosition(char[] seq) {

@@ -48,7 +48,7 @@ public class GameDriver {
         int counter = 0;
 
         //game runs for max 5 turns
-        while (++counter <= 5) {
+        while (++counter < 5) {
 
             if (turn == 0) {
                 pos = userAction();  //user input
@@ -63,9 +63,13 @@ public class GameDriver {
 
                 pos = userAction();
             }
-            showBoard();
-            if (gameEnd)
+
+
+            if (gameEnd && turn == 0)
                 break;
+            else
+                showBoard();
+
         }
 
         //result announcement
