@@ -131,10 +131,6 @@ public class PseudoAI {
         }
     }
 
-    private static void update() {
-
-    }
-
     //Clear counts and arraylist
     private static void flushData() {
         xCount = 0;
